@@ -5,4 +5,6 @@
 
     <dimen name="bonus_padding">8dp</dimen>
     <dimen name="bonus_big_padding">16dp</dimen>
+
+    <dimen name="cell_view_size">40dp</dimen>
 </resources>

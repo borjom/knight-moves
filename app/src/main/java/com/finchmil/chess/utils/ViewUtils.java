@@ -38,7 +38,7 @@ public class ViewUtils {
     }
 
     public static int getCellSize(Context c) {
-        return ViewUtils.getScreenWidth(c) / Const.CELL_COUNT;
+        return c.getResources().getDimensionPixelSize(R.dimen.cell_view_size);
     }
 
     public static void showYesAlert(Context context, String title, String message, String positiveText, DialogInterface.OnClickListener listener) {

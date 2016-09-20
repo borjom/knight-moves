@@ -2,10 +2,7 @@ package com.finchmil.chess.view;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
@@ -14,9 +11,6 @@ import android.widget.ImageView;
 import com.finchmil.chess.Bonus;
 import com.finchmil.chess.R;
 import com.finchmil.chess.utils.ViewUtils;
-
-import butterknife.BindColor;
-import butterknife.BindDimen;
 
 /**
  * Created by Vgrigoryev on 13.07.2016.
