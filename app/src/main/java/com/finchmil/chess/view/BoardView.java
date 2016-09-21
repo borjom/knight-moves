@@ -2,12 +2,16 @@ package com.finchmil.chess.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.GridLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import com.finchmil.chess.Bonus;
 import com.finchmil.chess.R;
@@ -23,8 +27,10 @@ import butterknife.ButterKnife;
  * Created by Vgrigoryev on 20.09.2016.
  */
 
-public class BoardView extends RelativeLayout {
+public class BoardView extends ScrollView {
 
+    @BindView(R.id.horizontal_scroll)
+    HorizontalScrollView horizontalScrollView;
     @BindView(R.id.grid_layout)
     GridLayout gridLayout;
     @BindView(R.id.horse_image_view)
@@ -90,6 +96,7 @@ public class BoardView extends RelativeLayout {
 
     private void generateCells() {
         gridLayout.removeAllViews();
+        gridLayout.setColumnCount(columnCount);
 
         CellView view;
 
@@ -274,6 +281,35 @@ public class BoardView extends RelativeLayout {
         if (result != null && result.isCellActive()) {
             list.add(result);
         }
+    }
+
+    private float mx, my, curX, curY;
+    private boolean started = false;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        curX = event.getX();
+        curY = event.getY();
+        int dx = (int) (mx - curX);
+        int dy = (int) (my - curY);
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_MOVE:
+                if (started) {
+                    scrollBy(0, dy);
+                    horizontalScrollView.scrollBy(dx, 0);
+                } else {
+                    started = true;
+                }
+                mx = curX;
+                my = curY;
+                break;
+            case MotionEvent.ACTION_UP:
+                scrollBy(0, dy);
+                horizontalScrollView.scrollBy(dx, 0);
+                started = false;
+                break;
+        }
+        return true;
     }
 
     public interface BoardViewInterface {

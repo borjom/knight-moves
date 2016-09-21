@@ -14,11 +14,6 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.greed_layout)
-    GridLayout gridLayout;
-    @BindView(R.id.horse_image_view)
-    ImageView horseImageView;
-
     @BindView(R.id.board_view)
     BoardView boardView;
 
@@ -56,6 +51,6 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-        boardView.setBoardSize(4, 8);
+        boardView.setBoardSize(20, 20);
     }
 }
