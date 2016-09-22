@@ -5,15 +5,28 @@
     android:layout_height="wrap_content"
     >
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        >
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
     <com.finchmil.chess.view.DisbledHorScroll
         android:id="@+id/horizontal_scroll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:scrollbars="none"
         >
 
         <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
 
             <GridLayout
                 android:id="@+id/grid_layout"
@@ -32,5 +45,11 @@
         </FrameLayout>
 
     </com.finchmil.chess.view.DisbledHorScroll>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+    </LinearLayout>
 
 </merge>

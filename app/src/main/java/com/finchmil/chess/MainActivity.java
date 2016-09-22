@@ -51,6 +51,20 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-        boardView.setBoardSize(20, 20);
+
+
+        boardView.setBoard(new int[][]{
+                new int[]{2, 0, 2, 0, 0, 0, 0, 0},
+                new int[]{0, 0, 0, 0, 0, 0, 0, 0},
+                new int[]{2, 0, 2, 0, 0, 0, 0, 0},
+                new int[]{0, 0, 0, 0, 0, 0, 0, 0},
+                new int[]{0, 0, 0, 0, 0, 0, 0, 0},
+                new int[]{0, 0, 0, 0, 0, 0, 0, 0},
+                new int[]{0, 0, 0, 0, 0, 0, 0, 0},
+                new int[]{0, 0, 0, 0, 0, 0, 0, 0},
+        });
+        boardView.setHorsePosition(new int[]{1, 0});
+
+        boardView.reloadGame();
     }
 }

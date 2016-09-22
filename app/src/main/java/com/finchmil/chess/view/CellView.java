@@ -75,6 +75,12 @@ public class CellView extends FrameLayout {
         ViewUtils.animateBackgroundColor(this, getResources().getColor((column + row) % 2 == 0 ? R.color.colorAccent : R.color.colorPrimary), 300);
     }
 
+    public void setDeactive() {
+        isActive = false;
+        setClickable(false);
+        setBackgroundColor(Color.BLACK);
+    }
+
     public boolean isCellActive() {
         return isActive;
     }

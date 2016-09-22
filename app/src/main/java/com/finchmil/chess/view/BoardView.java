@@ -38,9 +38,11 @@ public class BoardView extends ScrollView {
 
     private CellView[][] cellsArray;
     private int[] horsePosition;
+    private int[] origHorsePosition;
 
     private BoardViewInterface boardViewInterface;
 
+    private int[][] boardArray;
     private int rowCount;
     private int columnCount;
 
@@ -71,17 +73,24 @@ public class BoardView extends ScrollView {
     private void init() {
         inflate(getContext(), R.layout.board_view, this);
         ButterKnife.bind(this);
+        setVerticalScrollBarEnabled(false);
+        setFillViewport(true);
     }
 
-    public void setBoardSize(int rowCount, int columnCount) {
-        this.rowCount = rowCount;
-        this.columnCount = columnCount;
-        reloadGame();
+    public void setBoard(int[][] board) {
+        this.boardArray = board;
+        this.rowCount = board.length;
+        this.columnCount = board[0].length;
+    }
+
+    public void setHorsePosition(int[] horsePosition) {
+        this.horsePosition = horsePosition;
+        this.origHorsePosition = horsePosition;
     }
 
     public void reloadGame() {
         cellsArray = new CellView[rowCount][columnCount];
-        horsePosition = new int[]{0,0};
+        horsePosition = origHorsePosition;
 
         generateCells();
 
@@ -90,8 +99,8 @@ public class BoardView extends ScrollView {
         lp.height = size;
         lp.width = size;
         horseImageView.setLayoutParams(lp);
-        horseImageView.setTranslationX(0);
-        horseImageView.setTranslationY(0);
+        horseImageView.setTranslationX(horsePosition[1] * size);
+        horseImageView.setTranslationY(horsePosition[0] * size);
     }
 
     private void generateCells() {
@@ -116,6 +125,15 @@ public class BoardView extends ScrollView {
 
                 view.setCellIndex(r, c);
                 view.setOnClickListener(listener);
+
+                try {
+                    int currentIndex = boardArray[r][c];
+                    if (currentIndex != 0) {
+                        view.setDeactive();
+                    }
+                } catch (Exception e) {
+
+                }
 
                 gridLayout.addView(view);
                 cellsArray[r][c] = view;
@@ -257,15 +275,20 @@ public class BoardView extends ScrollView {
 
     private void horizontalBonusPick(int index) {
         CellView[] cellArray = cellsArray[index];
+        int[] cellIndexes = boardArray[index];
 
-        for (CellView cell : cellArray) {
-            cell.activateCell();
+        for(int i = 0; i < cellArray.length; i++) {
+            if (cellIndexes[i] != 2) {
+                cellArray[i].activateCell();
+            }
         }
     }
 
     private void verticalBonusPick(int index) {
-        for (CellView[] cellArray : cellsArray) {
-            cellArray[index].activateCell();
+        for (int r = 0; r < boardArray.length; r++) {
+            if (boardArray[r][index] != 2) {
+                cellsArray[r][index].activateCell();
+            }
         }
     }
 
