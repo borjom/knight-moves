@@ -191,7 +191,14 @@ public class BoardView extends ScrollView {
             cellsArray[horseRow][horseColumn].deactivateCell();
             boardViewInterface.incrementTurn();
 
+            int height = ViewUtils.getScreenHeight(getContext());
+            int width = ViewUtils.getScreenWidth(getContext());
 
+            int cellIHeight = height / cellSize;
+            int cellIWidth = width / cellSize;
+
+            smoothScrollTo(0, (cellRow - (cellIHeight / 2) ) * cellSize);
+            horizontalScrollView.smoothScrollTo((cellColumn - (cellIWidth / 2) ) * cellSize , 0);
 
             if (analyseMoves()) {
                 placeBonus();
