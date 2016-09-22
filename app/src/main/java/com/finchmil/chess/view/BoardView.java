@@ -93,6 +93,7 @@ public class BoardView extends ScrollView {
         horsePosition = origHorsePosition;
 
         generateCells();
+        placeBonusNotRand();
 
         ViewGroup.LayoutParams lp = horseImageView.getLayoutParams();
         int size = ViewUtils.getCellSize(getContext());
@@ -128,7 +129,7 @@ public class BoardView extends ScrollView {
 
                 try {
                     int currentIndex = boardArray[r][c];
-                    if (currentIndex != 0) {
+                    if (currentIndex == 1 || currentIndex == 2) {
                         view.setDeactive();
                     }
                 } catch (Exception e) {
@@ -201,7 +202,6 @@ public class BoardView extends ScrollView {
             horizontalScrollView.smoothScrollTo((cellColumn - (cellIWidth / 2) ) * cellSize , 0);
 
             if (analyseMoves()) {
-                placeBonus();
                 checkIfHasBonus();
             }
         }
@@ -243,6 +243,20 @@ public class BoardView extends ScrollView {
         }
 
         return true;
+    }
+
+    private void placeBonusNotRand() {
+        for (int r = 0; r < rowCount; r++) {
+            for (int c = 0; c < columnCount; c++) {
+                int index = boardArray[r][c];
+
+                if (index == 3) {
+                    cellsArray[r][c].setBonus(Bonus.HORIZONTAL_BONUS);
+                } else if (index == 4) {
+                    cellsArray[r][c].setBonus(Bonus.VERTICAL_BONUS);
+                }
+            }
+        }
     }
 
     private void placeBonus() {
