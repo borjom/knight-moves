@@ -3,6 +3,7 @@ package com.finchmil.chess.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.HorizontalScrollView;
 
 /**
@@ -24,6 +25,11 @@ public class DisbledHorScroll extends HorizontalScrollView {
 
     public DisbledHorScroll(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    @Override
+    public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
+        return false;
     }
 
     @Override

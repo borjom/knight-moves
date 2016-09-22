@@ -191,6 +191,8 @@ public class BoardView extends ScrollView {
             cellsArray[horseRow][horseColumn].deactivateCell();
             boardViewInterface.incrementTurn();
 
+
+
             if (analyseMoves()) {
                 placeBonus();
                 checkIfHasBonus();
