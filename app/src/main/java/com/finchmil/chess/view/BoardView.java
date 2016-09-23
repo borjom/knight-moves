@@ -29,6 +29,12 @@ import butterknife.ButterKnife;
 
 public class BoardView extends ScrollView {
 
+    private static final int DEFAULT_FIELD = 0;
+    private static final int RESTORABLE_FIELD = 1;
+    private static final int EMPTY_FIELD = 2;
+    private static final int HORIZONTAL_BONUS = 3;
+    private static final int VERTICAL_BONUS = 4;
+
     @BindView(R.id.horizontal_scroll)
     HorizontalScrollView horizontalScrollView;
     @BindView(R.id.grid_layout)
@@ -45,6 +51,9 @@ public class BoardView extends ScrollView {
     private int[][] boardArray;
     private int rowCount;
     private int columnCount;
+    private boolean pickBonuses;
+
+    private BottomBar bottomBar;
 
     public BoardView(Context context) {
         super(context);
@@ -88,6 +97,27 @@ public class BoardView extends ScrollView {
         this.origHorsePosition = horsePosition;
     }
 
+    public void setPickBonuses(boolean pick) {
+        pickBonuses = pick;
+    }
+
+    public void setBottomBar(BottomBar bottomBar) {
+        this.bottomBar = bottomBar;
+        this.bottomBar.bottomBarInterface = new BottomBar.BottomBarInterface() {
+            @Override
+            public void onBonusUses(Bonus bonus) {
+                switch (bonus) {
+                    case HORIZONTAL_BONUS:
+                        horizontalBonusPick(horsePosition[0]);
+                        break;
+                    case VERTICAL_BONUS:
+                        verticalBonusPick(horsePosition[1]);
+                        break;
+                }
+            }
+        };
+    }
+
     public void reloadGame() {
         cellsArray = new CellView[rowCount][columnCount];
         horsePosition = origHorsePosition;
@@ -129,7 +159,7 @@ public class BoardView extends ScrollView {
 
                 try {
                     int currentIndex = boardArray[r][c];
-                    if (currentIndex == 1 || currentIndex == 2) {
+                    if (currentIndex == EMPTY_FIELD || currentIndex == RESTORABLE_FIELD) {
                         view.setDeactive();
                     }
                 } catch (Exception e) {
@@ -202,7 +232,7 @@ public class BoardView extends ScrollView {
             horizontalScrollView.smoothScrollTo((cellColumn - (cellIWidth / 2) ) * cellSize , 0);
 
             if (analyseMoves()) {
-                checkIfHasBonus();
+                checkIfHasBonus(pickBonuses);
             }
         }
 
@@ -250,9 +280,9 @@ public class BoardView extends ScrollView {
             for (int c = 0; c < columnCount; c++) {
                 int index = boardArray[r][c];
 
-                if (index == 3) {
+                if (index == HORIZONTAL_BONUS) {
                     cellsArray[r][c].setBonus(Bonus.HORIZONTAL_BONUS);
-                } else if (index == 4) {
+                } else if (index == VERTICAL_BONUS) {
                     cellsArray[r][c].setBonus(Bonus.VERTICAL_BONUS);
                 }
             }
@@ -275,7 +305,7 @@ public class BoardView extends ScrollView {
         }
     }
 
-    private void checkIfHasBonus() {
+    private void checkIfHasBonus(boolean pick) {
         int horseRow = horsePosition[0];
         int horseColumn = horsePosition[1];
 
@@ -286,13 +316,24 @@ public class BoardView extends ScrollView {
             currentCell.setBonus(Bonus.NO_BONUS);
         }
 
-        switch (currentBonus) {
-            case HORIZONTAL_BONUS:
-                horizontalBonusPick(horseRow);
-                break;
-            case VERTICAL_BONUS:
-                verticalBonusPick(horseColumn);
-                break;
+        if (!pick) {
+            switch (currentBonus) {
+                case HORIZONTAL_BONUS:
+                    horizontalBonusPick(horseRow);
+                    break;
+                case VERTICAL_BONUS:
+                    verticalBonusPick(horseColumn);
+                    break;
+            }
+        } else {
+            switch (currentBonus) {
+                case HORIZONTAL_BONUS:
+                    bottomBar.addHorizontalBonus();
+                    break;
+                case VERTICAL_BONUS:
+                    bottomBar.addVerticalBonus();
+                    break;
+            }
         }
     }
 
@@ -301,7 +342,7 @@ public class BoardView extends ScrollView {
         int[] cellIndexes = boardArray[index];
 
         for(int i = 0; i < cellArray.length; i++) {
-            if (cellIndexes[i] != 2) {
+            if (cellIndexes[i] != EMPTY_FIELD) {
                 cellArray[i].activateCell();
             }
         }
@@ -309,7 +350,7 @@ public class BoardView extends ScrollView {
 
     private void verticalBonusPick(int index) {
         for (int r = 0; r < boardArray.length; r++) {
-            if (boardArray[r][index] != 2) {
+            if (boardArray[r][index] != EMPTY_FIELD) {
                 cellsArray[r][index].activateCell();
             }
         }

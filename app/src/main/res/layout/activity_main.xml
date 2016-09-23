@@ -7,9 +7,18 @@
     android:background="@color/colorPrimaryDark"
     >
 
+    <com.finchmil.chess.view.BottomBar
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        />
+
     <com.finchmil.chess.view.BoardView
         android:id="@+id/board_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_bar"
+        />
 
 </RelativeLayout>

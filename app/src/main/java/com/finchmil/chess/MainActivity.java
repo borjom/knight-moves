@@ -8,12 +8,15 @@ import android.widget.ImageView;
 
 import com.finchmil.chess.utils.ViewUtils;
 import com.finchmil.chess.view.BoardView;
+import com.finchmil.chess.view.BottomBar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
+    @BindView(R.id.bottom_bar)
+    BottomBar bottomBar;
     @BindView(R.id.board_view)
     BoardView boardView;
 
@@ -59,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         // 3 - horizotal bonus
         // 4 - vertical bonus
 
+
+
         boardView.setBoard(new int[][]{
                 new int[]{2, 0, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 new int[]{2, 0, 2, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -80,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
                 new int[]{2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0},
         });
         boardView.setHorsePosition(new int[]{1, 1});
+        boardView.setPickBonuses(true);
+        boardView.setBottomBar(bottomBar);
 
         boardView.reloadGame();
     }
