@@ -2,7 +2,9 @@ package com.finchmil.chess.view;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.media.Image;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
@@ -24,6 +26,9 @@ public class CellView extends FrameLayout {
 
     private Bonus bonus = Bonus.NO_BONUS;
     private ImageView bonusView;
+
+    private int portalId = 0;
+    private ImageView portalView;
 
     public CellView(Context context) {
         super(context);
@@ -120,6 +125,41 @@ public class CellView extends FrameLayout {
         bonusView.setAlpha(0f);
 
         bonusView
+                .animate()
+                .withLayer()
+                .alpha(1f)
+                .setDuration(300)
+                .setInterpolator(new DecelerateInterpolator(2));
+    }
+
+    public int getPortalId() {
+        return portalId;
+    }
+
+    public void setPortal(int id) {
+        this.portalId = id;
+        if (id < BoardView.PORTAL_MIN_VALUE) {
+            if (portalView != null && portalView.getParent() != null) {
+                removeView(portalView);
+            }
+            return;
+        }
+
+        if (portalView == null) {
+            portalView = new ImageView(getContext());
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            portalView.setLayoutParams(lp);
+            portalView.setImageResource(R.drawable.portal);
+            portalView.setColorFilter(Color.parseColor("#" + Integer.toHexString(id)));
+        }
+
+        if (portalView.getParent() == null) {
+            addView(portalView);
+        }
+
+        portalView.setAlpha(0f);
+
+        portalView
                 .animate()
                 .withLayer()
                 .alpha(1f)

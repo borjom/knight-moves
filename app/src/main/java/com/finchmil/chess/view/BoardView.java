@@ -35,6 +35,8 @@ public class BoardView extends ScrollView {
     private static final int HORIZONTAL_BONUS = 3;
     private static final int VERTICAL_BONUS = 4;
 
+    public static final int PORTAL_MIN_VALUE = 100;
+
     @BindView(R.id.horizontal_scroll)
     HorizontalScrollView horizontalScrollView;
     @BindView(R.id.grid_layout)
@@ -132,6 +134,15 @@ public class BoardView extends ScrollView {
         horseImageView.setLayoutParams(lp);
         horseImageView.setTranslationX(horsePosition[1] * size);
         horseImageView.setTranslationY(horsePosition[0] * size);
+
+        int height = ViewUtils.getScreenHeight(getContext());
+        int width = ViewUtils.getScreenWidth(getContext());
+
+        int cellIHeight = height / size;
+        int cellIWidth = width / size;
+
+        smoothScrollTo(0, (horsePosition[0] - (cellIHeight / 2) ) * size);
+        horizontalScrollView.smoothScrollTo((horsePosition[1] - (cellIWidth / 2) ) * size , 0);
     }
 
     private void generateCells() {
@@ -207,6 +218,12 @@ public class BoardView extends ScrollView {
         }
 
         if (shouldMoveHorse) {
+
+            if (checkIfHasPortal(cellRow, cellColumn)) {
+                analyseMoves();
+                return;
+            }
+
             horsePosition = cellIndex;
 
             int cellSize = ViewUtils.getCellSize(getContext());
@@ -219,7 +236,9 @@ public class BoardView extends ScrollView {
                     .setDuration(300)
                     .setInterpolator(new DecelerateInterpolator(2));
 
-            cellsArray[horseRow][horseColumn].deactivateCell();
+            if (cellsArray[horseRow][horseColumn].getPortalId() < PORTAL_MIN_VALUE) {
+                cellsArray[horseRow][horseColumn].deactivateCell();
+            }
             boardViewInterface.incrementTurn();
 
             int height = ViewUtils.getScreenHeight(getContext());
@@ -284,6 +303,8 @@ public class BoardView extends ScrollView {
                     cellsArray[r][c].setBonus(Bonus.HORIZONTAL_BONUS);
                 } else if (index == VERTICAL_BONUS) {
                     cellsArray[r][c].setBonus(Bonus.VERTICAL_BONUS);
+                } else if (index >= PORTAL_MIN_VALUE) {
+                    cellsArray[r][c].setPortal(index);
                 }
             }
         }
@@ -303,6 +324,52 @@ public class BoardView extends ScrollView {
         } else {
             placeBonus();
         }
+    }
+
+    private boolean checkIfHasPortal(int cellRow, int cellColumn) {
+        int horseRow = horsePosition[0];
+        int horseColumn = horsePosition[1];
+
+        int portalId = boardArray[cellRow][cellColumn];
+
+        if (portalId > PORTAL_MIN_VALUE) {
+            for (int r = 0; r < boardArray.length; r++) {
+                for (int c = 0; c < boardArray[r].length; c++) {
+                    if (boardArray[r][c] == portalId && r != cellRow && c != cellColumn) {
+                        horsePosition = new int[] {r, c};
+
+                        int cellSize = ViewUtils.getCellSize(getContext());
+
+                        horseImageView
+                                .animate()
+                                .withLayer()
+                                .translationX(c * cellSize)
+                                .translationY(r * cellSize)
+                                .setDuration(300)
+                                .setInterpolator(new DecelerateInterpolator(2));
+
+                        if (cellsArray[horseRow][horseColumn].getPortalId() < PORTAL_MIN_VALUE) {
+                            cellsArray[horseRow][horseColumn].deactivateCell();
+                        }
+
+                        boardViewInterface.incrementTurn();
+
+                        int height = ViewUtils.getScreenHeight(getContext());
+                        int width = ViewUtils.getScreenWidth(getContext());
+
+                        int cellIHeight = height / cellSize;
+                        int cellIWidth = width / cellSize;
+
+                        smoothScrollTo(0, (r - (cellIHeight / 2) ) * cellSize);
+                        horizontalScrollView.smoothScrollTo((c - (cellIWidth / 2) ) * cellSize , 0);
+
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private void checkIfHasBonus(boolean pick) {
