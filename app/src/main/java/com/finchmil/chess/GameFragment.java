@@ -76,7 +76,7 @@ public class GameFragment extends Fragment {
 
             @Override
             public void showGameOver() {
-                ViewUtils.showYesAlert(getContext(), "Game over", generateEndMessage(), "начать заново", new DialogInterface.OnClickListener() {
+                ViewUtils.showYesAlert(getContext(), "Game over", generateEndMessage(false), "начать заново", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         boardView.reloadGame();
@@ -86,7 +86,7 @@ public class GameFragment extends Fragment {
 
             @Override
             public void showEndLevel() {
-                ViewUtils.showYesAlert(getContext(), "Уровень пройден", generateEndMessage(), "начать заново", new DialogInterface.OnClickListener() {
+                ViewUtils.showYesAlert(getContext(), "Уровень пройден", generateEndMessage(true), "начать заново", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         boardView.reloadGame();
@@ -126,8 +126,8 @@ public class GameFragment extends Fragment {
         boardView.setBottomBar(bottomBar);
     }
 
-    private String generateEndMessage() {
-        StringBuilder result = new StringBuilder("Уровень пройден.");
+    private String generateEndMessage(boolean end) {
+        StringBuilder result = new StringBuilder(end ? "Уровень пройден." : "Вы проиграли");
         result.append("\nСобрано звезд: ");
         result.append(starCount);
         result.append("\nСобрано бонусов всего: ");
