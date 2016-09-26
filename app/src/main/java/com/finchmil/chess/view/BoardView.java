@@ -1,6 +1,7 @@
 package com.finchmil.chess.view;
 
 import android.content.Context;
+import android.os.UserManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -34,6 +35,8 @@ public class BoardView extends ScrollView {
     private static final int EMPTY_FIELD = 2;
     private static final int HORIZONTAL_BONUS = 3;
     private static final int VERTICAL_BONUS = 4;
+    private static final int HORSE_POSITION = 5;
+    private static final int EXIT_POSITION = 6;
 
     public static final int PORTAL_MIN_VALUE = 100;
 
@@ -92,11 +95,19 @@ public class BoardView extends ScrollView {
         this.boardArray = board;
         this.rowCount = board.length;
         this.columnCount = board[0].length;
-    }
 
-    public void setHorsePosition(int[] horsePosition) {
-        this.horsePosition = horsePosition;
+        this.horsePosition = new int[]{0, 0};
         this.origHorsePosition = horsePosition;
+
+        for (int r = 0; r < boardArray.length; r++) {
+            for (int c = 0; c < boardArray[r].length; c++) {
+                if (boardArray[r][c] == HORSE_POSITION) {
+                    horsePosition[0] = r;
+                    horsePosition[1] = c;
+                    break;
+                }
+            }
+        }
     }
 
     public void setPickBonuses(boolean pick) {
@@ -143,6 +154,8 @@ public class BoardView extends ScrollView {
 
         smoothScrollTo(0, (horsePosition[0] - (cellIHeight / 2) ) * size);
         horizontalScrollView.smoothScrollTo((horsePosition[1] - (cellIWidth / 2) ) * size , 0);
+
+        bottomBar.reloadBar();
     }
 
     private void generateCells() {
@@ -262,6 +275,11 @@ public class BoardView extends ScrollView {
         int horseRow = horsePosition[0];
         int horseColumn = horsePosition[1];
 
+        if (boardArray[horseRow][horseColumn] == EXIT_POSITION) {
+            boardViewInterface.showEndLevel();
+            return false;
+        }
+
         int bigLeftMove = horseColumn - 2;
         int bigRightMove = horseColumn + 2;
         int bigTopMove = horseRow - 2;
@@ -286,7 +304,7 @@ public class BoardView extends ScrollView {
         addCellViewFromPositionToArrayList(bigBottomMove, smallLeftMove, cellsToMove);
         addCellViewFromPositionToArrayList(bigBottomMove, smallRightMove, cellsToMove);
 
-        if (cellsToMove.isEmpty()) {
+        if (cellsToMove.isEmpty() && bottomBar.getHorizontalBonuses() == 0 && bottomBar.getVerticalBonuses() == 0) {
             boardViewInterface.showGameOver();
             return false;
         }
@@ -305,6 +323,8 @@ public class BoardView extends ScrollView {
                     cellsArray[r][c].setBonus(Bonus.VERTICAL_BONUS);
                 } else if (index >= PORTAL_MIN_VALUE) {
                     cellsArray[r][c].setPortal(index);
+                } else if (index == EXIT_POSITION) {
+                    cellsArray[r][c].setExit();
                 }
             }
         }
@@ -470,5 +490,6 @@ public class BoardView extends ScrollView {
         void incrementTurn();
         int getTurn();
         void showGameOver();
+        void showEndLevel();
     }
 }

@@ -29,6 +29,7 @@ public class CellView extends FrameLayout {
 
     private int portalId = 0;
     private ImageView portalView;
+    private ImageView exitView;
 
     public CellView(Context context) {
         super(context);
@@ -160,6 +161,28 @@ public class CellView extends FrameLayout {
         portalView.setAlpha(0f);
 
         portalView
+                .animate()
+                .withLayer()
+                .alpha(1f)
+                .setDuration(300)
+                .setInterpolator(new DecelerateInterpolator(2));
+    }
+
+    public void setExit() {
+        if (exitView == null) {
+            exitView = new ImageView(getContext());
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            exitView.setLayoutParams(lp);
+            exitView.setImageResource(R.drawable.exit);
+        }
+
+        if (exitView.getParent() == null) {
+            addView(exitView);
+        }
+
+        exitView.setAlpha(0f);
+
+        exitView
                 .animate()
                 .withLayer()
                 .alpha(1f)

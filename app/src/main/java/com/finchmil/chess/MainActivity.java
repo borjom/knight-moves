@@ -2,25 +2,36 @@ package com.finchmil.chess;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 
+import com.finchmil.chess.models.LevelModel;
+import com.finchmil.chess.models.LevelsConfig;
+import com.finchmil.chess.utils.ApiWorker;
 import com.finchmil.chess.utils.ViewUtils;
 import com.finchmil.chess.view.BoardView;
 import com.finchmil.chess.view.BottomBar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Subscriber;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.bottom_bar)
-    BottomBar bottomBar;
-    @BindView(R.id.board_view)
-    BoardView boardView;
-
-    private int turn;
+    @BindView(R.id.tab_layout)
+    TabLayout tabLayout;
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,66 +39,46 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        init();
+        ApiWorker.getInstance().getLevelConfig().subscribe(new Subscriber<LevelsConfig>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(LevelsConfig levelsConfig) {
+                viewPager.setAdapter(new MainAdapter(getSupportFragmentManager(), levelsConfig));
+                tabLayout.setupWithViewPager(viewPager);
+            }
+        });
     }
 
-    private void init() {
-        turn = 0;
-        boardView.setBoardViewInterface(new BoardView.BoardViewInterface() {
-            @Override
-            public void incrementTurn() {
-                turn++;
-            }
+    protected class MainAdapter extends FragmentStatePagerAdapter {
 
-            @Override
-            public int getTurn() {
-                return turn;
-            }
+        private LevelsConfig config;
 
-            @Override
-            public void showGameOver() {
-                ViewUtils.showYesAlert(MainActivity.this, "Game over", "Game over", "начать заново", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        boardView.reloadGame();
-                    }
-                });
-            }
-        });
+        public MainAdapter(FragmentManager fm, LevelsConfig config) {
+            super(fm);
+            this.config = config;
+        }
 
-        // 0 - default cell
-        // 1 - restorable cell
-        // 2 - all time empty cell
+        @Override
+        public int getCount() {
+            return config.getLevels().length;
+        }
 
-        // 3 - horizotal bonus
-        // 4 - vertical bonus
+        @Override
+        public Fragment getItem(int position) {
+            return GameFragment.getFragment(config.getLevels()[position]);
+        }
 
-
-
-        boardView.setBoard(new int[][]{
-                new int[]{2, 0, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13369344},
-                new int[]{2, 0, 2, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                new int[]{2, 0, 2, 13434828, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                new int[]{2, 0, 2, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                new int[]{2, 0, 2, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0},
-                new int[]{2, 0, 2, 13369344, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0},
-                new int[]{2, 0, 2, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0},
-                new int[]{2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0},
-                new int[]{2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0},
-                new int[]{2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0},
-                new int[]{2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0},
-                new int[]{2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0},
-                new int[]{2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3},
-                new int[]{2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0},
-                new int[]{2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0},
-                new int[]{2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0},
-                new int[]{2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0},
-                new int[]{2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 13434828},
-        });
-        boardView.setHorsePosition(new int[]{1, 1});
-        boardView.setPickBonuses(true);
-        boardView.setBottomBar(bottomBar);
-
-        boardView.reloadGame();
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return (position + 1) + "";
+        }
     }
 }
