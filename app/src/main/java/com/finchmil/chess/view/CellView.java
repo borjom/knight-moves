@@ -30,6 +30,7 @@ public class CellView extends FrameLayout {
     private int portalId = 0;
     private ImageView portalView;
     private ImageView exitView;
+    private ImageView starView;
 
     public CellView(Context context) {
         super(context);
@@ -196,5 +197,35 @@ public class CellView extends FrameLayout {
                 .alpha(1f)
                 .setDuration(300)
                 .setInterpolator(new DecelerateInterpolator(2));
+    }
+
+    public void setStar() {
+        if (starView == null) {
+            starView = new ImageView(getContext());
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            starView.setLayoutParams(lp);
+            starView.setImageResource(R.drawable.star);
+        }
+
+        if (starView.getParent() == null) {
+            addView(starView);
+        }
+
+        starView.setAlpha(0f);
+
+        starView
+                .animate()
+                .withLayer()
+                .alpha(1f)
+                .setDuration(300)
+                .setInterpolator(new DecelerateInterpolator(2));
+    }
+
+    public void removeStar() {
+        try {
+            removeView(starView);
+        } catch (Exception e) {
+
+        }
     }
 }

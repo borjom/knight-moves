@@ -32,6 +32,8 @@ public class GameFragment extends Fragment {
     BoardView boardView;
 
     private int turn;
+    private int starCount;
+
     private String jsonUrl;
 
     public static GameFragment getFragment(String jsonUrl) {
@@ -74,7 +76,7 @@ public class GameFragment extends Fragment {
 
             @Override
             public void showGameOver() {
-                ViewUtils.showYesAlert(getContext(), "Game over", "Game over", "начать заново", new DialogInterface.OnClickListener() {
+                ViewUtils.showYesAlert(getContext(), "Game over", generateEndMessage(), "начать заново", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         boardView.reloadGame();
@@ -84,12 +86,22 @@ public class GameFragment extends Fragment {
 
             @Override
             public void showEndLevel() {
-                ViewUtils.showYesAlert(getContext(), "Exit reached", "Exit reached", "начать заново", new DialogInterface.OnClickListener() {
+                ViewUtils.showYesAlert(getContext(), "Уровень пройден", generateEndMessage(), "начать заново", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         boardView.reloadGame();
                     }
                 });
+            }
+
+            @Override
+            public void addStar() {
+                starCount++;
+            }
+
+            @Override
+            public void reloadGame() {
+                starCount = 0;
             }
         });
 
@@ -112,5 +124,21 @@ public class GameFragment extends Fragment {
         });
 
         boardView.setBottomBar(bottomBar);
+    }
+
+    private String generateEndMessage() {
+        StringBuilder result = new StringBuilder("Уровень пройден.");
+        result.append("\nСобрано звезд: ");
+        result.append(starCount);
+        result.append("\nСобрано бонусов всего: ");
+        result.append(bottomBar.getHorizontalBonusesTotal() + bottomBar.getVerticalBonusesTotal());
+        result.append("\nИспользовано бонусов: ");
+        result.append((bottomBar.getHorizontalBonusesTotal() + bottomBar.getVerticalBonusesTotal()) - (bottomBar.getVerticalBonuses() + bottomBar.getHorizontalBonuses()));
+        result.append("\nОсталось бонусов: ");
+        result.append(bottomBar.getHorizontalBonuses() + bottomBar.getVerticalBonuses());
+        result.append("\nСделано шагов: ");
+        result.append(turn);
+
+        return result.toString();
     }
 }

@@ -37,6 +37,7 @@ public class BoardView extends ScrollView {
     private static final int VERTICAL_BONUS = 4;
     private static final int HORSE_POSITION = 5;
     private static final int EXIT_POSITION = 6;
+    private static final int STAR_BONUS = 7;
 
     public static final int PORTAL_MIN_VALUE = 100;
 
@@ -242,6 +243,11 @@ public class BoardView extends ScrollView {
                 return;
             }
 
+            if (boardArray[cellRow][cellColumn] == STAR_BONUS) {
+                boardViewInterface.addStar();
+                cellsArray[cellRow][cellColumn].removeStar();
+            }
+
             horsePosition = cellIndex;
 
             int cellSize = ViewUtils.getCellSize(getContext());
@@ -330,6 +336,8 @@ public class BoardView extends ScrollView {
                     cellsArray[r][c].setPortal(index);
                 } else if (index == EXIT_POSITION) {
                     cellsArray[r][c].setExit();
+                } else if (index == STAR_BONUS) {
+                    cellsArray[r][c].setStar();
                 }
             }
         }
@@ -500,5 +508,7 @@ public class BoardView extends ScrollView {
         int getTurn();
         void showGameOver();
         void showEndLevel();
+        void addStar();
+        void reloadGame();
     }
 }

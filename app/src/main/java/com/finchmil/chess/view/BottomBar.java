@@ -35,6 +35,9 @@ public class BottomBar extends FrameLayout {
     @BindView(R.id.restart_btn)
     Button restartBtn;
 
+    private int verticalBonusesTotal;
+    private int horizontalBonusesTotal;
+
     private int verticalBonuses;
     private int horizontalBonuses;
 
@@ -102,11 +105,13 @@ public class BottomBar extends FrameLayout {
 
     public void addVerticalBonus() {
         verticalBonuses++;
+        verticalBonusesTotal++;
         verticalCount.setText("Вертикальные бонусы \n " +verticalBonuses);
     }
 
     public void addHorizontalBonus() {
         horizontalBonuses++;
+        horizontalBonusesTotal++;
         horizontalCount.setText("Горизонтальные бонусы \n " + horizontalBonuses);
     }
 
@@ -118,11 +123,21 @@ public class BottomBar extends FrameLayout {
         return horizontalBonuses;
     }
 
+    public int getHorizontalBonusesTotal() {
+        return horizontalBonusesTotal;
+    }
+
+    public int getVerticalBonusesTotal() {
+        return verticalBonusesTotal;
+    }
+
     public void reloadBar() {
         horizontalBonuses = 0;
+        horizontalBonusesTotal = 0;
         horizontalCount.setText("Горизонтальные бонусы \n 0");
 
         verticalBonuses = 0;
+        verticalBonusesTotal = 0;
         verticalCount.setText("Вертикальные бонусы \n 0");
     }
 
