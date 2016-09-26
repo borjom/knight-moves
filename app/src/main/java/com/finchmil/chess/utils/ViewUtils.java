@@ -41,12 +41,18 @@ public class ViewUtils {
         return c.getResources().getDimensionPixelSize(R.dimen.cell_view_size);
     }
 
-    public static void showYesAlert(Context context, String title, String message, String positiveText, DialogInterface.OnClickListener listener) {
+    public static void showYesAlert(Context context, String title, String message, String positiveText, final DialogInterface.OnClickListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle);
         builder.setTitle(title);
         builder.setMessage(message);
 
         builder.setPositiveButton(positiveText, listener);
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                listener.onClick(dialog, 0);
+            }
+        });
 
         AlertDialog dialog = builder.create();
         dialog.show();

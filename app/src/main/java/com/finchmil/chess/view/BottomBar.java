@@ -29,9 +29,11 @@ public class BottomBar extends FrameLayout {
 
     @BindView(R.id.ver_count)
     Button verticalCount;
-
     @BindView(R.id.horiz_count)
     Button horizontalCount;
+
+    @BindView(R.id.restart_btn)
+    Button restartBtn;
 
     private int verticalBonuses;
     private int horizontalBonuses;
@@ -89,6 +91,13 @@ public class BottomBar extends FrameLayout {
                 bottomBarInterface.onBonusUses(Bonus.HORIZONTAL_BONUS);
             }
         });
+
+        restartBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomBarInterface.restartGame();
+            }
+        });
     }
 
     public void addVerticalBonus() {
@@ -119,5 +128,7 @@ public class BottomBar extends FrameLayout {
 
     public interface BottomBarInterface {
         void onBonusUses(Bonus bonus);
+
+        void restartGame();
     }
 }

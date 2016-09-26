@@ -68,10 +68,14 @@ public class CellView extends FrameLayout {
         return new int[]{row, column};
     }
 
-    public void deactivateCell() {
+    public void deactivateCell(boolean restorable) {
         isActive = false;
         setClickable(false);
-        ViewUtils.animateBackgroundColor(this, Color.BLACK, 300);
+        if (!restorable) {
+            setBackgroundColor(Color.BLACK);
+        } else {
+            ViewUtils.animateBackgroundColor(this, getResources().getColor((column + row) % 2 == 0 ? R.color.colorAccent_darker : R.color.colorPrimary_darker), 300);
+        }
     }
 
     public void activateCell() {
@@ -81,10 +85,14 @@ public class CellView extends FrameLayout {
         ViewUtils.animateBackgroundColor(this, getResources().getColor((column + row) % 2 == 0 ? R.color.colorAccent : R.color.colorPrimary), 300);
     }
 
-    public void setDeactive() {
+    public void setDeactive(boolean restorable) {
         isActive = false;
         setClickable(false);
-        setBackgroundColor(Color.BLACK);
+        if (!restorable) {
+            setBackgroundColor(Color.BLACK);
+        } else {
+            setBackgroundColor(getResources().getColor((column + row) % 2 == 0 ? R.color.colorAccent_darker : R.color.colorPrimary_darker));
+        }
     }
 
     public boolean isCellActive() {

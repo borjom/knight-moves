@@ -128,6 +128,11 @@ public class BoardView extends ScrollView {
                         break;
                 }
             }
+
+            @Override
+            public void restartGame() {
+                reloadGame();
+            }
         };
     }
 
@@ -184,7 +189,7 @@ public class BoardView extends ScrollView {
                 try {
                     int currentIndex = boardArray[r][c];
                     if (currentIndex == EMPTY_FIELD || currentIndex == RESTORABLE_FIELD) {
-                        view.setDeactive();
+                        view.setDeactive(currentIndex == RESTORABLE_FIELD);
                     }
                 } catch (Exception e) {
 
@@ -250,7 +255,7 @@ public class BoardView extends ScrollView {
                     .setInterpolator(new DecelerateInterpolator(2));
 
             if (cellsArray[horseRow][horseColumn].getPortalId() < PORTAL_MIN_VALUE) {
-                cellsArray[horseRow][horseColumn].deactivateCell();
+                cellsArray[horseRow][horseColumn].deactivateCell(boardArray[horseRow][horseColumn] == RESTORABLE_FIELD);
             }
             boardViewInterface.incrementTurn();
 
@@ -369,7 +374,7 @@ public class BoardView extends ScrollView {
                                 .setInterpolator(new DecelerateInterpolator(2));
 
                         if (cellsArray[horseRow][horseColumn].getPortalId() < PORTAL_MIN_VALUE) {
-                            cellsArray[horseRow][horseColumn].deactivateCell();
+                            cellsArray[horseRow][horseColumn].deactivateCell(boardArray[horseRow][horseColumn] == RESTORABLE_FIELD);
                         }
 
                         boardViewInterface.incrementTurn();
@@ -433,6 +438,8 @@ public class BoardView extends ScrollView {
                 cellArray[i].activateCell();
             }
         }
+
+        analyseMoves();
     }
 
     private void verticalBonusPick(int index) {
@@ -441,6 +448,8 @@ public class BoardView extends ScrollView {
                 cellsArray[r][index].activateCell();
             }
         }
+
+        analyseMoves();
     }
 
     private void addCellViewFromPositionToArrayList(int row, int column, ArrayList<CellView> list) {
