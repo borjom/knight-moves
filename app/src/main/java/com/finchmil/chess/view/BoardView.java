@@ -162,6 +162,7 @@ public class BoardView extends ScrollView {
         horizontalScrollView.smoothScrollTo((horsePosition[1] - (cellIWidth / 2) ) * size , 0);
 
         bottomBar.reloadBar();
+        boardViewInterface.reloadGame();
     }
 
     private void generateCells() {
@@ -261,7 +262,8 @@ public class BoardView extends ScrollView {
                     .setInterpolator(new DecelerateInterpolator(2));
 
             if (cellsArray[horseRow][horseColumn].getPortalId() < PORTAL_MIN_VALUE) {
-                cellsArray[horseRow][horseColumn].deactivateCell(boardArray[horseRow][horseColumn] == RESTORABLE_FIELD);
+                int index = boardArray[horseRow][horseColumn];
+                cellsArray[horseRow][horseColumn].deactivateCell(index != EMPTY_FIELD);
             }
             boardViewInterface.incrementTurn();
 
@@ -382,7 +384,7 @@ public class BoardView extends ScrollView {
                                 .setInterpolator(new DecelerateInterpolator(2));
 
                         if (cellsArray[horseRow][horseColumn].getPortalId() < PORTAL_MIN_VALUE) {
-                            cellsArray[horseRow][horseColumn].deactivateCell(boardArray[horseRow][horseColumn] == RESTORABLE_FIELD);
+                            cellsArray[horseRow][horseColumn].deactivateCell(boardArray[horseRow][horseColumn] != EMPTY_FIELD);
                         }
 
                         boardViewInterface.incrementTurn();
