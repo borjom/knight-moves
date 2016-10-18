@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.finchmil.chess.Bonus;
 import com.finchmil.chess.R;
@@ -160,7 +161,13 @@ public class CellView extends FrameLayout {
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             portalView.setLayoutParams(lp);
             portalView.setImageResource(R.drawable.portal);
-            portalView.setColorFilter(Color.parseColor("#" + Integer.toHexString(id)));
+
+            try {
+                portalView.setColorFilter(Color.parseColor("#" + Integer.toHexString(id)));
+            } catch (Exception e) {
+                portalView.setColorFilter(Color.GREEN);
+                Toast.makeText(getContext(), "Неправильный цвет портала row:" + row + " column:" + column, Toast.LENGTH_SHORT).show();
+            }
         }
 
         if (portalView.getParent() == null) {

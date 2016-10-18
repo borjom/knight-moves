@@ -1,5 +1,6 @@
 package com.finchmil.chess.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.UserManager;
 import android.util.AttributeSet;
@@ -95,7 +96,22 @@ public class BoardView extends ScrollView {
     public void setBoard(int[][] board) {
         this.boardArray = board;
         this.rowCount = board.length;
-        this.columnCount = board[0].length;
+
+        for (int i = 0; i < rowCount; i++) {
+            if (columnCount < board[i].length) {
+                columnCount = board[i].length;
+            }
+        }
+
+        for (int i = 0; i < rowCount; i++) {
+            int[] row = board[i];
+
+            if (row.length < columnCount) {
+                int[] newArray = new int[columnCount];
+                System.arraycopy(row, 0, newArray, 0, row.length);
+                board[i] = newArray;
+            }
+        }
 
         this.horsePosition = new int[]{0, 0};
         this.origHorsePosition = horsePosition;
@@ -187,7 +203,6 @@ public class BoardView extends ScrollView {
 
                 view.setCellIndex(r, c);
                 view.setOnClickListener(listener);
-
                 try {
                     int currentIndex = boardArray[r][c];
                     if (currentIndex == EMPTY_FIELD || currentIndex == RESTORABLE_FIELD) {
